@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.OrderDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.Order">
+        <result column="id" 	            property="id" />
+        <result column="user_id" 	        property="userId" />
+        <result column="amount" 	        property="amount" />
+        <result column="amount_remaining" 	property="amountRemaining" />
+        <result column="completed_dtm" 	    property="completedDtm" />
+        <result column="order_type" 	    property="orderType" />
+        <result column="price" 	            property="price" />
+        <result column="reg_dtm" 	        property="regDtm" />
+        <result column="status" 	        property="status" />
+        <result column="coin_pair" 	        property="coinPair" />
+        <result column="from_coin_name" 	property="fromCoinName" />
+        <result column="to_coin_name" 	    property="toCoinName" />
+        <result column="cancel_dtm" 	    property="cancelDtm" />
+    </resultMap>
+
+    <parameterMap id="Order" type="com.exchange.core.domain.dto.Order"/>
+
+    <sql id="table">`order`</sql>
+
+    <insert id="insert" parameterMap="Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`user_id`,`amount`,`amount_remaining`,`completed_dtm`,`order_type`,`price`,`reg_dtm`,`status`,`coin_pair`,`from_coin_name`,`to_coin_name`,`cancel_dtm`)
+        VALUES
+        (#{userId},#{amount},#{amountRemaining},#{completedDtm},#{orderType},#{price},#{regDtm},#{status},#{coinPair},#{fromCoinName},#{toCoinName},#{cancelDtm})
+    </insert>
+
+    <select id="findAllByUserIdAndCoinPairAndStatus" resultMap="AllFieldsResultMap" parameterMap="Order">
+        SELECT
+        `id`,`amount`,`amount_remaining`,`order_type`,`price`,`reg_dtm`
+        FROM
+        <include refid="table"/>
+        WHERE
+        `user_id`=#{userId}
+        AND `coin_pair`=#{coinPair}
+        AND `status`=#{status}
+        ORDER BY `id` DESC
+    </select>
+
+    <select id="getTradeCandidateOrdersSell" resultType="java.lang.Long" parameterMap="Order">
+        SELECT
+          `id`
+        FROM
+          <include refid="table"/>
+        WHERE
+        `coin_pair`=#{coinPair}
+        AND `amount_remaining` &gt; 0
+        AND `order_type`=#{orderType}
+        AND `status`=#{status}
+        AND `reg_dtm`&gt;=#{regDtm}
+        AND `price`&lt;=#{price}
+        ORDER BY `price` ASC
+    </select>
+
+    <select id="getTradeCandidateOrdersBuy" resultType="java.lang.Long" parameterMap="Order">
+        SELECT
+          `id`
+        FROM
+          <include refid="table"/>
+        WHERE
+        `coin_pair`=#{coinPair}
+        AND `amount_remaining` &gt; 0
+        AND `order_type`=#{orderType}
+        AND `status`=#{status}
+        AND `reg_dtm`&gt;=#{regDtm}
+        AND `price`&gt;=#{price}
+        ORDER BY `price` DESC
+    </select>
+
+    <select id="findOneByIdAndUserIdAndStatus" resultMap="AllFieldsResultMap" parameterMap="Order">
+        SELECT
+        `order_type`,`amount_remaining`,`price`,`from_coin_name`
+        FROM
+        <include refid="table" />
+        WHERE
+        `id`=#{id}
+        AND `user_id`=#{userId}
+        AND `status`=#{status}
+    </select>
+
+    <select id="findOneByIdToAmountRemainingAndStatus" resultMap="AllFieldsResultMap" parameterType="java.lang.Long">
+        SELECT
+          `amount_remaining`,`status`
+        FROM
+        <include refid="table" />
+        WHERE
+          `id`=#{orderId}
+    </select>
+
+    <select id="findOneByIdToUserIdAndAmountRemainingAndPriceAndStatus" resultMap="AllFieldsResultMap" parameterType="java.lang.Long">
+        SELECT
+        `user_id`,`amount_remaining`,`price`,`status`
+        FROM
+        <include refid="table" />
+        WHERE
+        `id`=#{orderId}
+    </select>
+
+    <select id="getBuyingOrders" resultType="com.exchange.core.domain.vo.GroupOrderVo" parameterMap="Order">
+        SELECT
+        `price`, SUM(`amount_remaining`) AS `amount`, `price` * SUM(`amount_remaining`) AS totalPrice
+        FROM
+        <include refid="table" />
+        WHERE
+        `coin_pair`=#{coinPair}
+        AND `order_type`=#{orderType}
+        AND `status`=#{status}
+        GROUP BY `price`
+        ORDER BY `price` DESC
+    </select>
+
+    <select id="getSellingOrders" resultType="com.exchange.core.domain.vo.GroupOrderVo" parameterMap="Order">
+        SELECT
+        `price`, SUM(`amount_remaining`) AS `amount`, `price` * SUM(`amount_remaining`) AS totalPrice
+        FROM
+        <include refid="table" />
+        WHERE
+        `coin_pair`=#{coinPair}
+        AND `order_type`=#{orderType}
+        AND `status`=#{status}
+        GROUP BY `price`
+        ORDER BY `price` ASC
+    </select>
+
+    <update id="updateByIdToAmountRemainingAndCompletedDtmAndStatus" parameterMap="Order">
+        UPDATE
+        <include refid="table" />
+        SET
+        `amount_remaining`=#{amountRemaining},
+        `completed_dtm`=#{completedDtm},
+        `status`=#{status}
+        WHERE
+        `id`=#{id}
+    </update>
+
+    <update id="updateByIdToCancelDtmAndStatus" parameterMap="Order">
+        UPDATE
+        <include refid="table" />
+        SET
+        `cancel_dtm`=#{cancelDtm},
+        `status`=#{status}
+        WHERE
+        `id`=#{id}
+    </update>
+
+</mapper>

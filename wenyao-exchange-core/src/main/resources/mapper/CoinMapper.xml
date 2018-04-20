@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.CoinDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.Coin">
+        <result column="name" 	                        property="name" />
+        <result column="full_name" 	                    property="fullName" />
+        <result column="display_priority" 	            property="displayPriority" />
+        <result column="rpc_url"                        property="rpcUrl" />
+        <result column="logo_url"                       property="logoUrl" />
+        <result column="reg_dtm"                        property="regDtm" />
+        <result column="active"                         property="active" />
+        <result column="withdrawal_min_amount"          property="withdrawalMinAmount" />
+        <result column="withdrawal_auto_allow_max_amount"   property="withdrawalAutoAllowMaxAmount"/>
+        <result column="withdrawal_fee_amount"          property="withdrawalFeeAmount"/>
+        <result column="auto_collect_min_amount"        property="autoCollectMinAmount"/>
+        <result column="trading_fee_percent"            property="tradingFeePercent"/>
+        <result column="trading_min_amount"             property="tradingMinAmount"/>
+        <result column="margin_trading_fee_percent"     property="marginTradingFeePercent"/>
+        <result column="deposit_scan_page_offset"       property="depositScanPageOffset"/>
+        <result column="deposit_scan_page_size"         property="depositScanPageSize"/>
+        <result column="deposit_allow_confirmation"     property="depositAllowConfirmation"/>
+    </resultMap>
+
+    <parameterMap id="Coin" type="com.exchange.core.domain.dto.Coin"/>
+
+    <sql id="table">coin</sql>
+
+    <select id="findOneByNameToAllFields" resultMap="AllFieldsResultMap" parameterType="java.lang.String">
+        SELECT
+          `name`,`full_name`,`display_priority`, `rpc_url`, `logo_url`, `reg_dtm`, `active`, `withdrawal_min_amount`,
+          `withdrawal_auto_allow_max_amount`, `withdrawal_fee_amount`, `auto_collect_min_amount`, `trading_fee_percent`, `trading_min_amount`, `margin_trading_fee_percent`
+        FROM
+          <include refid="table" />
+        WHERE
+          `name` = #{name}
+    </select>
+
+    <select id="findOneByNameToAutoCollectMinAmountAndDepositAllowConfirmation" resultMap="AllFieldsResultMap" parameterMap="Coin">
+        SELECT
+        `auto_collect_min_amount`,`deposit_allow_confirmation`
+        FROM
+        <include refid="table" />
+        WHERE
+        `name` = #{name}
+        <if test="active != null">
+            AND `active`=#{active}
+        </if>
+    </select>
+
+    <select id="findOneByNameToPageInfo" resultMap="AllFieldsResultMap" parameterMap="Coin">
+        SELECT
+        `deposit_scan_page_offset`,`deposit_scan_page_size`
+        FROM
+        <include refid="table" />
+        WHERE
+        `name` = #{name}
+        <if test="active != null">
+            AND `active`=#{active}
+        </if>
+    </select>
+
+    <select id="findOneByNameToTradingFeePercentAndTradingMinAmount" resultMap="AllFieldsResultMap" parameterMap="Coin">
+        SELECT
+        `trading_fee_percent`,`trading_min_amount`
+        FROM
+        <include refid="table" />
+        WHERE
+        `name` = #{name}
+        <if test="active != null">
+            AND `active`=#{active}
+        </if>
+    </select>
+
+    <select id="findOneByNameToWithdrawalAmountAndWithdrawalFeeAmount" resultMap="AllFieldsResultMap" parameterType="com.exchange.core.domain.enums.CoinEnum">
+        SELECT
+          `withdrawal_min_amount`,`withdrawal_fee_amount`
+        FROM
+          <include refid="table" />
+        WHERE
+          `name` = #{name}
+    </select>
+
+    <select id="findAllToName" resultMap="AllFieldsResultMap">
+        SELECT
+          `name`,`full_name`
+        FROM
+          <include refid="table" />
+        WHERE
+          1
+        ORDER BY display_priority ASC
+    </select>
+    <!--,`unit` AndUnit-->
+    <select id="findActiveToName" resultMap="AllFieldsResultMap" parameterType="com.exchange.core.domain.enums.ActiveEnum">
+        SELECT
+          `name`
+        FROM
+          <include refid="table" />
+        WHERE
+          `active` = #{active}
+        ORDER BY display_priority ASC
+    </select>
+
+    <select id="findOneByNameAndActiveToCount" resultType="java.lang.Integer" parameterMap="Coin">
+        SELECT
+          COUNT(*)
+        FROM
+          <include refid="table" />
+        WHERE
+          `name`=#{name}
+        AND
+          `active`=#{active}
+    </select>
+
+</mapper>

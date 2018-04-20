@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.MarketHistoryOrderDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"  type="com.exchange.core.domain.dto.MarketHistoryOrder">
+        <result column="id" 	        property="id" />
+        <result column="user_id"        property="userId" />
+        <result column="order_id" 	    property="orderId" />
+        <result column="price"          property="price" />
+        <result column="amount"         property="amount" />
+        <!--<result column="dt"             property="dt" />-->
+        <result column="order_type"     property="orderType" />
+        <result column="completed_dtm"  property="completedDtm" />
+        <!--<result column="reg_dtm"        property="regDtm"/>-->
+        <result column="status"         property="status"/>
+        <result column="coin_pair" property="coinPair"/>
+        <result column="from_coin_name" property="fromCoinName"/>
+        <result column="to_coin_name"   property="toCoinName"/>
+    </resultMap>
+
+    <parameterMap id="MarketHistoryOrder" type="com.exchange.core.domain.dto.MarketHistoryOrder"/>
+
+    <sql id="table">market_history_order</sql>
+
+    <insert id="insert" parameterMap="MarketHistoryOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`user_id`,`order_id`,`price`,`amount`,`order_type`,`completed_dtm`,`status`,`coin_pair`,`from_coin_name`,`to_coin_name`)
+        VALUES
+        (#{userId},#{orderId},#{price},#{amount},#{orderType},#{completedDtm},#{status},#{coinPair},#{fromCoinName},#{toCoinName})
+    </insert>
+
+    <select id="findAllByCoinPairOrderById" resultMap="AllFieldsResultMap" parameterMap="MarketHistoryOrder">
+        SELECT
+        `price`,`amount`,`order_type`,`completed_dtm`,`from_coin_name`,`to_coin_name`
+        FROM
+        <include refid="table"/>
+        WHERE
+        `coin_pair`=#{coinPair}
+        ORDER BY `id` DESC
+    </select>
+
+</mapper>

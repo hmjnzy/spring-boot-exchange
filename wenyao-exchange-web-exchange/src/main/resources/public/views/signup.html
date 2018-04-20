@@ -1,0 +1,53 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<!--<hr style="border-bottom: 1px solid red;margin-bottom: 30px">-->
+
+<!--<b>register</b>-->
+
+<!--<form action="/doSignup" method="post">-->
+    <!--<span class="red-color">邮箱</span> :<input type="type" name="email" id="email"/></br>-->
+    <!--<span class="red-color">密码</span> :<input type="type" name="pwd" id="pwd"/></br> -->
+    <!--<input type="submit" value="注册" />-->
+<!--</form>-->
+
+<div id="wrap-body">
+    <div id="container" class="container">
+        <div class="row row-centered">
+            <div class="col-lg-12">
+                <div id="header">
+                    <div class="wrap">
+                        <img class="img-responsive center-block" th:src="@{/images/logo.png}" alt="">
+                    </div>
+                </div>
+                <div id="content" class="padding-lr60">
+                    <form action="/doSignup" method="post" role="form">
+                        <div class="input-group input-group-md">
+                            <span class="input-group-addon sign" id="sizing-addon1"><img th:src="@{/images/email.png}" alt=""></span>
+                            <input type="type" class="form-control" id="email" name="email" placeholder="请输入邮箱地址"/>
+                        </div>
+                        <div class="input-group input-group-md">
+                            <span class="input-group-addon sign" id="sizing-addon1"><img th:src="@{/images/pwd.png}" alt=""></span>
+                            <input type="password" class="form-control" id="pwd" name="pwd" placeholder="请输入密码"/>
+                        </div>
+                        <div class="input-group input-group-md" style="visibility:hidden;">
+                            <input type="text" class="form-control code-input" id="userid" name="userid" maxlength="4" placeholder="请输入验证码"/>
+                            <span class="input-group-addon code-style" id="code"><img th:src="@{/images/email.png}" alt=""></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-block btn-color-bg register current">注&nbsp;&nbsp;&nbsp;&nbsp;册</button>
+                        <!--<button type="submit" class="btn login bottom">登录</button><button type="submit" class="btn forget-pwd bottom">忘记密码</button>-->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<hr style="border-bottom: 1px solid red;margin-top: 30px">-->
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+
+
+</html>

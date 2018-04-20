@@ -1,0 +1,68 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<hr style="border-bottom: 1px solid red;margin-bottom: 30px">
+
+<!-- 登录密码 -->
+<strong>登录密码</strong>
+    <div><a>修改密码</a>, 登录进行谷歌安全验证 on/off</div>
+
+<!-- 谷歌验证 -->
+<strong>谷歌验证</strong>
+<div>提现，修改密码，及安全设置时用以输入谷歌验证码. <b><a href="javascript:otpAuthPopup()" th:text="${otpHash == null ? '设置' : '重置'}"></a></b>
+    <br>
+        <a href="https://www.okcoin.cn/t-1004420.html" target="_blank">使用指南</a><br>
+        <a href="http://shouji.baidu.com/software/3832652.html" target="_blank">Android App</a><br>
+        <a href="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8" target="_blank">IOS App</a><br>
+    </div>
+<!-- 谷歌验证 Popup-->
+<div id="otpAuthPopup" style="display:none; position: absolute; top: 100px; left: 200px; background-color: #FFF; height: 240px;width: 500px;border: 1px solid red">
+    <div id="otpAuthQr"></div>
+    秘钥: <input type="text" name="secretKey" id="secretKey" readonly/>
+    新谷歌验证码: <input type="number" name="authCode" id="authCode"/>
+    <button onclick="setOtpAuth()">确认提交</button> <button onclick="$('#otpAuthPopup').hide();">关闭</button>
+</div>
+<script th:inline="javascript" type="text/javascript">
+function otpAuthPopup() {
+    $('#otpAuthPopup').show();
+    $.get('otpAuth', {}, function(result) {
+        if (result.status == 0) {
+            $('#otpAuthQr').text('');
+            $('#otpAuthQr').qrcode({
+                render: 'table',
+                width: 200,
+                height:200,
+                background: '#ffffff',
+                foreground: 'black',
+                text: result.data.qRBarcodeURL
+            });
+            $('#secretKey').val(result.data.secretKey);
+        } else {
+            alert(result.message);
+        }
+    },'json');
+}
+function setOtpAuth() {
+    var secretKey = $("#secretKey").val();
+    var authCode = $("#authCode").val();
+    $.post('otpAuth', {secretKey: secretKey, authCode: authCode}, function(result) {
+        console.log(JSON.stringify(result));
+        alert(result.message);
+        if (result.status == 0) {
+            location.reload();
+        }
+    },'json');
+}
+</script>
+
+
+<!-- 谷资金密码 -->
+<strong>资金密码</strong>
+    <div>交易，提现，修改安全设置时输入.     修改密码(请输入原资金密码，请输入新资金密码，请再输入一次密码，谷歌验证码)/忘记密码(直接发送邮箱)</div>
+
+
+<hr style="border-bottom: 1px solid red;margin-top: 30px">
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+</html>

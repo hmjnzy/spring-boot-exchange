@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.LevelDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.Level">
+        <result column="coin_name" 	    property="coinName" />
+        <result column="level"          property="level" />
+        <result column="once_amount" 	property="onceAmount" />
+        <result column="oneday_amount"  property="onedayAmount" />
+    </resultMap>
+
+    <parameterMap id="Level" type="com.exchange.core.domain.dto.Level"/>
+
+    <sql id="table">level</sql>
+
+    <select id="findOneByCoinNameAndLevel" resultMap="AllFieldsResultMap" parameterMap="Level">
+        SELECT
+          `once_amount`, `oneday_amount`
+        FROM
+          <include refid="table" />
+        WHERE
+          `coin_name` = #{coinName}
+        AND
+          `level` = #{level}
+    </select>
+
+<!--    <select id="findOneByEmailToAllFields" resultMap="AllFieldsResultMap" parameterType="java.lang.String">
+        SELECT
+        `id`, `email`,`pwd`,`level`,`otp_hash`,`active`,`role`,`reg_dtm`,`del_dtm`
+        FROM
+        <include refid="table" />
+        WHERE
+        email = #{email}
+    </select>
+
+    <select id="findByEmailToCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT
+        COUNT(*)
+        FROM
+        <include refid="table" />
+        WHERE
+        email = #{email}
+    </select>
+
+    <insert id="insert" parameterMap="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`email`,`pwd`,`level`,`otp_hash`,`active`,`role`,`reg_dtm`)
+        VALUES
+        (#{email},#{pwd},#{level},#{otpHash},#{active},#{role},#{regDtm})
+    </insert>
+
+    <update id="updateActive" parameterMap="User">
+        UPDATE
+        <include refid="table" />
+        SET
+        `active`=#{active}
+        WHERE
+        email = #{email}
+    </update>-->
+
+</mapper>

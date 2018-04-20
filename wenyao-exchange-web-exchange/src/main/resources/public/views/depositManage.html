@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<hr style="border-bottom: 1px solid red;margin-bottom: 30px">
+
+<b>入款depositManage</b><br>
+<ul >
+    <li th:each="o : ${coins}">
+        <a th:onclick="'location.href=\'?coin=' + ${o.coin.name} + '\''">
+            <span th:text="${o.coin.fullName}"></span> (<span th:text="${o.coin.name}"></span>)
+        </a>
+    </li>
+</ul>
+<h2 style="color:orange" th:if="${#lists.isEmpty(currentWallet?.address)}">
+    <button th:onclick="'createWallet(\'' + ${coinName} + '\')'" th:text = "${coinName} + ' 生成入款地址.'"></button>
+</h2>
+<h3 style="color:orange" th:unless="${currentWallet?.address} == null"
+    th:text="${currentWallet?.address} + ${currentWallet?.bankName == null ? '' : ' *银行名称 : ' + currentWallet?.bankName} + ${currentWallet?.bankName == null ? '' : ' *收款人 : ' + currentWallet?.recvCorpNm}">
+</h3>
+
+
+<div style="color:orange" th:if="${not #lists.isEmpty(currentWallet?.address)}">
+<h2>入款明细</h2>
+<table border="1">
+    <thead><tr bgcolor="#faebd7">
+        <th style="width: 120px;">状态</th>
+        <th style="width: 500px;">地址</th>
+        <th style="width: 160px;">金额</th>
+        <th style="width: 160px;">确认数</th>
+        <th style="width: 180px;">记录日期</th>
+        <th style="width: 180px;">完成日期</th>
+        <th style="width: 100px;">TXID</th>
+    </tr></thead>
+    <tbody id="depositTransactionBodyId"></tbody>
+</table>
+</div>
+
+<script th:inline="javascript" type="text/javascript">
+    var selectedCoin = [[${coinName}]];
+</script>
+<script th:src="'/js/deposit.js?dummy=' + ${dummy}"></script>
+
+<hr style="border-bottom: 1px solid red;margin-top: 30px">
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+</html>

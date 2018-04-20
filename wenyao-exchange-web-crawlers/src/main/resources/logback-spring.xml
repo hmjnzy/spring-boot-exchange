@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <!--IDE Console输出-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %green(%logger{35}):%line - %magenta(%msg) %n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+    <!--文件输出-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>logs/crawlers-application.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/crawlers-application.log.%d{yyyyMMdd}.out</FileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>2MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--<appender name="Sentry" class="net.kencochrane.raven.logback.SentryAppender">-->
+        <!--<dsn>https://publicKey:secretKey@host:port/1?options</dsn>-->
+        <!--<tags>tag1:value1,tag2:value2</tags>-->
+    <!--</appender>-->
+
+    <!--默认的logback.xml文件名加上-spring就可以支持spring扩展profile<springProfile name=(spring.profiles.active)>-->
+    <springProfile name="local">
+        <!--指定dao包打印sql语句-->
+        <!--<logger name="com.idea.example.repository.dao" level="DEBUG"/>-->
+        <logger name="org.springframework.web" level="ERROR"/>
+        <!--<logger name="org.springboot.sample" level="INFO" />-->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="org.springframework.web" level="ERROR"/>
+        <!--<logger name="org.springboot.sample" level="WARN" />-->
+        <root level="INFO">
+            <!--<appender-ref ref="Sentry"/>-->
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.MyHistoryOrderDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.MyHistoryOrder">
+        <result column="id" 	        property="id" />
+        <result column="user_id"        property="userId" />
+        <result column="order_id"       property="orderId" />
+        <result column="amount"         property="amount" />
+        <result column="completed_dtm"  property="completedDtm" />
+        <result column="dt"             property="dt" />
+        <result column="order_type"     property="orderType" />
+        <result column="price"          property="price" />
+        <result column="reg_dtm"        property="regDtm"/>
+        <result column="status"         property="status"/>
+        <result column="coin_pair"      property="coinPair"/>
+        <result column="from_coin_name" property="fromCoinName"/>
+        <result column="to_coin_name"   property="toCoinName"/>
+        <result column="to_user_id"     property="toUserId"/>
+        <result column="to_order_id"    property="toOrderId"/>
+    </resultMap>
+
+    <parameterMap id="MyHistoryOrder" type="com.exchange.core.domain.dto.MyHistoryOrder"/>
+
+    <sql id="table">my_history_order</sql>
+
+    <insert id="insert" parameterMap="MyHistoryOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`user_id`,`order_id`,`amount`,`completed_dtm`,`dt`,`order_type`,`price`,`reg_dtm`,`status`,`coin_pair`,`from_coin_name`,`to_coin_name`,`to_user_id`,`to_order_id`)
+        VALUES
+        (#{userId},#{orderId},#{amount},#{completedDtm},#{dt},#{orderType},#{price},#{regDtm},#{status},#{coinPair},#{fromCoinName},#{toCoinName},#{toUserId},#{toOrderId})
+    </insert>
+
+    <select id="findAllByUserIdAndCoinPairOrderById" resultMap="AllFieldsResultMap" parameterMap="MyHistoryOrder">
+        SELECT
+        `order_id`,`price`,`amount`,`completed_dtm`,`order_type`,`from_coin_name`,`to_coin_name`
+        FROM
+        <include refid="table"/>
+        WHERE
+        `user_id`=#{userId}
+        AND `coin_pair`=#{coinPair}
+        ORDER BY `id` DESC
+    </select>
+
+</mapper>

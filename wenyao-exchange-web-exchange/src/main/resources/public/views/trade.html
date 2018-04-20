@@ -1,0 +1,85 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<hr style="border-bottom: 1px solid red;margin-bottom: 10px">
+
+<div th:if="${user} != null">
+    <div><span th:text="${fstBaseCoin.name}"></span>: <span id="fstBaseCoinValue">0</span>(<span id="fstBaseCoinLeftValue">0</span>)使用中</div>
+    <div><span th:text="${secTradeCoin.name}"></span>: <span id="secTradeCoinValue">0</span>(<span id="secTradeCoinLeftValue">0</span>)使用中</div>
+</div>
+<!-- ------------------------------------------------MY ORDER start------------------------------------------------- -->
+<table border="1">
+    <tr>
+        <td> &nbsp;创建时间&nbsp; </td>
+        <td> &nbsp;单价&nbsp; </td>
+        <td> &nbsp;数量&nbsp; </td>
+        <td> &nbsp;类型&nbsp; </td>
+        <td> &nbsp;操作&nbsp; </td>
+    </tr>
+    <tbody id="myOrders">
+    <tr><td colspan="5" align="center">Loading</td></tr>
+    </tbody>
+</table>
+<!--
+"amount":2,"amountRemaining":2,"orderType":"SELL","price":20,"regDtm":"2018-04-18 18:08:17"
+-->
+<!-- ------------------------------------------------MY ORDER end--------------------------------------------------- -->
+<!-- ------------------------------------------------BUY start------------------------------------------------------ -->
+<br>
+<form name="buyForm" id="buyForm">
+coinPair:<input name="coinPair" th:value="${coinPair}"><br>
+orderType:<input name="orderType" value="BUY"><br>
+fromCoin:<input name="fromCoin" th:value="${fstBaseCoin.name}"><br>
+toCoin:<input name="toCoin" th:value="${secTradeCoin.name}"><br>
+walletBaseCoinAvailableBalance:<input id="walletBaseCoinAvaFromBuy" name="walletBaseCoinAvailableBalance" value="0"><br>
+walletTradeCoinAvailableBalance:<input id="walletTradeCoinAvaFromBuy" name="walletTradeCoinAvailableBalance" value="0"><br>
+tradingFeePercent:<input name="tradingFeePercent" th:value="${secTradeCoin.tradingFeePercent}">
+<table border="1">
+<tr><td colspan="2">购买(Buy)</td></tr>
+<tr><td>余额(<span th:text="${fstBaseCoin.name}"></span>):</td><td><span id="walletBaseCoinAvaDisplayFromBuy">0</span> <span th:text="${fstBaseCoin.name}"></span></td></tr>
+<tr><td>购买单价(<span th:text="${fstBaseCoin.name}"></span>)</td><td> <input type="number" name="price" id="buyPrice" placeholder="输入买单价"/><span th:text="${fstBaseCoin.name}"></span></td></tr>
+<tr><td>购买总数(总额)</td><td><input type="number" name="amount" id="buyAmount" placeholder="输入购买总数(总额)"/><span th:text="${secTradeCoin.name}"></span></td></tr>
+
+<tr><td>购买总金额(<span th:text="${fstBaseCoin.name}"></span>):</td><td> <span id="buyBalance">0</span><span th:text="${fstBaseCoin.name}"></span></td></tr>
+<tr><td>手续费(<span th:text="${secTradeCoin.name}"></span>):</td><td>   <span id="buyFee">0</span> <span th:text="${secTradeCoin.name}"></span>
+                                                                        <span th:text="'(' + ${#numbers.formatDecimal(secTradeCoin.tradingFeePercent,1,2,'POINT')} + '%)'"></span></td></tr>
+<tr><td>扣除费率后的<span th:text="${secTradeCoin.name}"></span>总数:</td><td><span id="buyTotalBalance">0</span> <span th:text="${secTradeCoin.name}"></span> </td></tr>
+<tr><td colspan="2"><input type="button" value="买(Buy)" onclick="onReqOrderClick('buy')"/></td></tr>
+</table>
+</form>
+<!-- ------------------------------------------------BUY end-------------------------------------------------------- -->
+<!-- ------------------------------------------------SELL start----------------------------------------------------- -->
+<br>
+<form name="sellForm" id="sellForm">
+coinPair:<input name="coinPair" th:value="${coinPair}"><br>
+orderType:<input name="orderType" value="SELL"><br>
+fromCoin:<input name="fromCoin" th:value="${secTradeCoin.name}"><br>
+toCoin:<input name="toCoin" th:value="${fstBaseCoin.name}"><br>
+walletBaseCoinAvailableBalance:<input id="walletBaseCoinAvaFromSell" name="walletBaseCoinAvailableBalance" value="0"><br>
+walletTradeCoinAvailableBalance:<input id="walletTradeCoinAvaFromSell" name="walletTradeCoinAvailableBalance" value="0"><br>
+tradingFeePercent:<input name="tradingFeePercent" th:value="${fstBaseCoin.tradingFeePercent}">
+<table border="1" style="margin-top:20px;">
+<tr><td colspan="2">卖(SELL)</td></tr>
+<tr><td>余额(<span th:text="${secTradeCoin.name}"></span>):</td><td><span id="walletTradeCoinAvaDisplayFromSell">0</span> <span th:text="${secTradeCoin.name}"></span></td></tr>
+<tr><td>卖单价(<span th:text="${fstBaseCoin.name}"></span>)</td><td> <input type="number" name="price" id="sellPrice" placeholder="输入卖单价"/><span th:text="${fstBaseCoin.name}"></span></td></tr>
+<tr><td>卖总数(总额)</td><td><input type="number" name="amount" id="sellAmount" placeholder="输入卖总数(总额)"/><span th:text="${secTradeCoin.name}"></span></td></tr>
+
+<tr><td>卖总金额(<span th:text="${fstBaseCoin.name}"></span>):</td><td>     <span id="sellBalance">0</span><span th:text="${fstBaseCoin.name}"></span> </td></tr>
+<tr><td>手续费(<span th:text="${fstBaseCoin.name}"></span>):</td><td>       <span id="sellFee">0</span>  <span th:text="${fstBaseCoin.name}"></span>
+                                                                            <span th:text="'(' + ${#numbers.formatDecimal(fstBaseCoin.tradingFeePercent,1,2,'POINT')} + '%)'"></span></td></tr>
+<tr><td>扣除费率后的<span th:text="${fstBaseCoin.name}"></span>总数:</td><td> <span id="sellTotalBalance">0</span> <span th:text="${fstBaseCoin.name}"></span> </td></tr>
+<tr><td colspan="2"><input type="button" value="卖(Sell)" onclick="onReqOrderClick('sell')"/></td></tr>
+</table>
+</form>
+<!-- ------------------------------------------------SELL end------------------------------------------------------- -->
+
+<script th:inline="javascript" type="text/javascript">
+    var user = [[${user}]], selectedCoinPair = [[${coinPair}]];
+</script>
+<script th:src="'/js/trade.js?dummy=' + ${dummy}"></script>
+
+<hr style="border-bottom: 1px solid red;margin-top: 30px">
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+</html>

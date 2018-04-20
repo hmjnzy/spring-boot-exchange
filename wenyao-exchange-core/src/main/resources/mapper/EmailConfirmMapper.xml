@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.EmailConfirmDaoImpl">
+
+    <resultMap id="BaseResultMap"  type="com.exchange.core.domain.dto.EmailConfirm">
+        <result column="hash_email" property="hashEmail" />
+        <result column="code"       property="code" />
+        <result column="email" 	    property="email" />
+        <result column="send_yn"    property="sendYn" />
+        <result column="reg_dtm"    property="regDtm" />
+    </resultMap>
+
+    <parameterMap id="EmailConfirm" type="com.exchange.core.domain.dto.EmailConfirm"/>
+
+    <sql id="table">email_confirm</sql>
+
+    <select id="findOneByHashemailAndCode" resultMap="BaseResultMap" parameterMap="EmailConfirm">
+        SELECT
+          `email`,`send_yn`
+        FROM
+          <include refid="table" />
+        WHERE
+          hash_email = #{hashEmail}
+        AND
+          code = #{code}
+    </select>
+
+    <select id="findOneByEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+          `hash_email`,`code`,`email`,`send_yn`,`reg_dtm`
+        FROM
+          <include refid="table" />
+        WHERE
+          email = #{email}
+    </select>
+
+    <insert id="insert" parameterMap="EmailConfirm">
+        INSERT INTO
+          <include refid="table" />
+          (`hash_email`,`code`,`email`,`send_yn`,`reg_dtm`)
+        VALUES
+          (#{hashEmail},#{code},#{email},#{sendYn},#{regDtm})
+    </insert>
+
+    <update id="updateSendYn" parameterMap="EmailConfirm">
+        UPDATE
+         <include refid="table" />
+        SET
+        `send_yn`=#{sendYn}
+        WHERE
+        email = #{email}
+    </update>
+
+</mapper>

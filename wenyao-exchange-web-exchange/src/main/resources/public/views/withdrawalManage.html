@@ -1,0 +1,105 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<hr style="border-bottom: 1px solid red;margin-bottom: 30px">
+
+<b>出款withdrawalManage</b><br>
+<ul >
+    <li th:each="o : ${coins}">
+        <a th:onclick="'location.href=\'?coin=' + ${o.coin.name} + '\''">
+            <span th:text="${o.coin.fullName}"></span> (<span th:text="${o.coin.name}"></span>)
+        </a>
+    </li>
+</ul>
+
+<form name="withdrawalForm" id="withdrawalForm">
+    coinName: <input type="text" name="coinName" th:value="${coinName}"><br>
+    onceAmount: <input type="text" name="onceAmount" th:value="${currentLevel.onceAmount}"><br>
+    onedayAmount: <input type="text" name="onedayAmount" th:value="${currentLevel.onedayAmount}"><br>
+    minWithdrawalAmount: <input type="text" name="minWithdrawalAmount" th:value="${#numbers.formatDecimal(currentCoin.withdrawalMinAmount,1,8,'POINT')}"><br>
+
+    <span th:if="${#lists.isEmpty(currentWallet?.address)}">
+        availableBalance: <input type="text" name="availableBalance" value="0"><br>
+    </span>
+    <span th:if="${not #lists.isEmpty(currentWallet?.address)}">
+        myLimitAmount: <input type="text" name="myLimitAmount" th:value="${currentLevel.onedayAmount - currentWallet.todayWithdrawalTotalBalance > 0 ? currentLevel.onedayAmount - currentWallet.todayWithdrawalTotalBalance: 0}"><br>
+        availableBalance: <input type="text" name="availableBalance" th:value="${#numbers.formatDecimal(currentWallet.availableBalance,1,8,'POINT')}"><br>
+    </span>
+
+<label>可提现金额</label>
+<div>
+    <p style="color:orange" th:if="${#lists.isEmpty(currentWallet?.address)}" th:text="'0.00000000 ' + ${coinName}">0</p>
+    <p style="color:orange" th:if="${not #lists.isEmpty(currentWallet?.address)}" th:text="${#numbers.formatDecimal(currentWallet.availableBalance,1,8,'POINT')} + ' ' + ${coinName}">0</p>
+    <span th:text="${'最小提现金额 : ' + #numbers.formatDecimal(currentCoin.withdrawalMinAmount,1,8,'POINT')} + ' ' + ${coinName}"></span>
+    <span th:text="${'提现费率 : ' + #numbers.formatDecimal(currentCoin.withdrawalFeeAmount,1,8,'POINT')} + ' ' + ${coinName}"></span>
+</div>
+<div>
+    <label>提现地址</label>
+    <div>
+        <input type="text" name="address" placeholder="请输入提现地址">
+    </div>
+</div>
+<div>
+    <label>提现金额</label>
+    <div>
+        <input type="number" name="amount" placeholder="请输入提现金额" value="0">
+    </div>
+</div>
+<div>
+    <label>OTP Code</label>
+    <div>
+        <input type="number" name="authCode" placeholder="请输入 OTP Code">
+    </div>
+</div>
+<button type="button" th:onclick="'doWithdrawal(\'' + ${coinName} + '\')'">申请提现</button>
+</form>
+
+<table>
+    <thead>
+        <tr role="row" bgcolor="#faebd7"><th style="width: 300px;">基准</th><th >金额限度</th></tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1次 提现金额</td>
+        <td th:text="${currentLevel.onceAmount}"></td>
+    </tr>
+    <tr>
+        <td>1日 提现金额</td>
+        <td th:text="${currentLevel.onedayAmount}"></td>
+    </tr>
+    <tr>
+        <td>可提现 剩余金额</td>
+        <td th:if="${#lists.isEmpty(currentWallet?.address)}" th:text="${currentLevel.onedayAmount}"></td>
+        <td th:if="${not #lists.isEmpty(currentWallet?.address)}" th:text="${currentLevel.onedayAmount - currentWallet.todayWithdrawalTotalBalance > 0 ? currentLevel.onedayAmount - currentWallet.todayWithdrawalTotalBalance: 0}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="color:orange" th:if="${not #lists.isEmpty(currentWallet?.address)}">
+    <h2>提现明细</h2>
+    <table border="1">
+        <thead><tr bgcolor="#faebd7">
+            <th style="width: 120px;">状态</th>
+            <th style="width: 500px;">地址</th>
+            <th style="width: 160px;">金额</th>
+            <th style="width: 160px;">确认数</th>
+            <th style="width: 180px;">记录日期</th>
+            <th style="width: 180px;">完成日期</th>
+            <th style="width: 100px;">TXID</th>
+        </tr></thead>
+        <tbody id="withdrawalTransactionBodyId"></tbody>
+    </table>
+</div>
+
+
+<script th:inline="javascript" type="text/javascript">
+    var selectedCoin = [[${coinName}]];
+</script>
+<script th:src="'/js/withdrawal.js?dummy=' + ${dummy}"></script>
+
+
+<hr style="border-bottom: 1px solid red;margin-top: 30px">
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+</html>

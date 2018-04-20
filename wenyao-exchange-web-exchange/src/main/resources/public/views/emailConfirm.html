@@ -1,0 +1,51 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/baseHeader :: baseHeader"></head>
+<body>
+<!--<hr style="border-bottom: 1px solid red;margin-bottom: 30px">-->
+
+<!--<b>emailConfirm</b>-->
+
+<!--<div><strong>title:</strong><span th:text="${ResEmailConfirm.getTitle()}"></span></div>-->
+<!--<div><strong>msg:</strong><span th:text="${ResEmailConfirm.getMsg()}"></span></div>-->
+<!--<div><strong>url:</strong><span th:text="${ResEmailConfirm.getUrl()}"></span></div>-->
+<!--<div><strong>urlTitle:</strong><span th:text="${ResEmailConfirm.getUrlTitle()}"></span></div>-->
+
+<div id="wrap-body">
+    <div id="container" class="container clearfix">
+        <div class="row row-centered">
+            <div class="col-lg-12">
+                <div id="header">
+                    <div class="wrap word">
+                        <span th:text="( ${ResEmailConfirm.getTitle()} == '邮箱验证失败.') ? '邮箱验证失败' : '恭喜您已经注册成功'"></span>
+                    </div>
+                </div>
+                <div id="content" class="padding-lr40">
+                    <div class="word-t text-align-l mg-l40 mg-r40 relative-t-90">
+                        <div class="notes">
+                            <div class="notes-t font-size24">
+                                您现在可以
+                            </div>
+                            <div class="notes-c mg-t20" th:switch="${ResEmailConfirm.getTitle()}">
+                                <ul th:case="'邮箱验证失败.'">
+                                    <li th:text="${ResEmailConfirm.getMsg()}"></li>
+                                </ul>
+                                <ul th:case="*">
+                                    <li>查询虚拟货币的价格</li>
+                                    <li>与其他用户交换货币</li>
+                                    <li>购买虚拟货币</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-block btn-color-bg experience mg-t40"><a th:href="${ResEmailConfirm.getUrl()}" th:text="${ResEmailConfirm.getUrlTitle()}">立即体验</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<hr style="border-bottom: 1px solid red;margin-top: 30px">-->
+<div th:replace="common/baseFooter :: baseFooter"></div>
+</body>
+</html>

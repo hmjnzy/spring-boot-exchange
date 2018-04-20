@@ -1,0 +1,170 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: HiraginoSansGB-W3;
+
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+a{
+    text-decoration:none;
+}
+a:link{text-decoration:none;/* 指正常的未被访问过的链接*/ }
+a:visited{text-decoration:none;/*指已经访问过的链接*/ }
+a:hover{text-decoration:none;/*指鼠标在链接*/ }
+a:active{text-decoration:none;/* 指正在点的链接*/ }
+
+.mg-l40{margin-left:40px;}
+.mg-r40{margin-right:40px;}
+.mg-t40{margin-top:40px;}
+.mg-t20{margin-top:20px;}
+
+html{height:100%;}
+body{height:100%;}
+body #wrap-body{background: url("../images/backgd.jpg") no-repeat;height:100%}
+
+/*web background*/
+#container{
+    display:table;
+    height:100%;
+    width:480px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+/*.clearfix:after{*/
+    /*content: "exchange";*/
+    /*display: block;*/
+    /*height: 0;*/
+    /*clear: both;*/
+    /*visibility: hidden;*/
+/*}*/
+
+/*.clearfix {*/
+    /*!* 触发 hasLayout *!*/
+    /*zoom: 1;*/
+/*}*/
+
+#container .row{
+    display:table-cell;
+    vertical-align:middle;
+}
+/* centered columns styles */
+#container .row-centered {
+    text-align:center;
+}
+#container .row .col-centered {
+
+    display:inline-block;
+    /* float:none; */
+}
+
+#container .row #header{background-color:#0082e8;height:120px;}
+#container .row #header .wrap{width:480px;height:120px;display:table-cell;vertical-align:middle;text-align:center;}
+#container .row #header .wrap.word{color:#fff;font:30px HiraginoSansGB-W3;letter-spacing:2px}
+
+#container .row #content{background:#fff; position:relative;width:480px;height:450px;display:table-cell;vertical-align:middle;text-align:center;}
+#container .row .padding-lr60{padding:0 60px;}
+#container .row .padding-lr40{padding:0 40px;}
+#container .row #content .input-group-addon{
+    background-color:none;
+    width:47px;height:46px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    border:none;
+}
+#container .row #content .input-group-md{margin-bottom:26px;}
+#container .row #content input{width:240px;height:48px;border-radius:0px}
+#container .row #content .sign{background-color:#0082e8;}
+#container .row #content .code-style{background:#fff;border:none;width:106px;height:48px;position:absolute;right:0}
+#container .row #content .code-input{width:300px;margin-bottom:14px;}
+#container .row #content button{
+    font:16px 微软雅黑;
+    background:#fff;
+    color:#0085e7;
+    margin-top: 15px;
+    height:48px;
+    border:none;
+}
+#container .row #content button.btn-color-bg{
+    color:#fff;
+    background: -webkit-linear-gradient(left, #00a4f9, #0087e6, #006aef);
+    background: -o-linear-gradient(left,#00a4f9, #0087e6, #006aef);
+    background: -moz-linear-gradient(left,#00a4f9, #0087e6, #006aef);
+    background: -ms-linear-gradient(left,#00a4f9, #0087e6, #006aef);
+}
+/* #container .row #content button.register{
+
+} */
+#container .row #content button.bottom{
+    margin:10px 60px 0;
+    padding:0 0;
+}
+#container .row #content button.experience{
+    position: relative;
+    top:80px;
+}
+#container .row #content button.experience a{
+   color:#fff;
+}
+#container .row #content button.login{
+    /*position:absolute;*/
+    /*left:0;*/
+}
+#container .row #content button.forget-pwd{
+    position:absolute;
+    right:0;
+}
+#container .row #content .word-t{
+    color:#4d4d4d;
+    font-size:18px;
+    position:relative;
+    /* top:-60px; */
+}
+#container .row #content .relative-t-60{
+    top:-60px;
+}
+#container .row #content .relative-t-40{
+    top:-40px;
+}
+#container .row #content .relative-t-90{
+    top:-90px;
+}
+#container .row #content .text-align-l{
+    text-align:left;
+}
+#container .row #content .word-t .title .title-t{
+    white-space:nowrap;
+}
+#container .row #content .word-t .title .title-e{
+    color:#0085e7;
+}
+#container .row #content .word-t .notes .notes-c .send-e{
+    color:#0085e7;
+    /* text-decoration:underline; */
+    text-decoration: none;
+    border-bottom: 1px solid #0085e7;
+}
+#container .row #content .word-t .notes .notes-t.font-size24{
+    font-size:24px;
+}
+#container .row #content .word-t .notes .notes-c ul li{
+    list-style-position:inside;
+    font-size:18px;
+    line-height:30px;
+}
+
+.red-color {
+    color: red;
+}

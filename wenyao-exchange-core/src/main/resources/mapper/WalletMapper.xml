@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.WalletDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.Wallet">
+        <result column="id" 	                        property="id" />
+        <result column="user_id"                        property="userId" />
+        <result column="coin_name" 	                    property="coinName" />
+        <result column="address"                        property="address" />
+        <result column="bank_code"                      property="bankCode" />
+        <result column="bank_name"                      property="bankName" />
+        <result column="recv_corp_nm"                   property="recvCorpNm" />
+        <result column="tag"                            property="tag" />
+        <result column="deposit_dvcd"                   property="depositDvcd"/>
+        <result column="using_balance"                  property="usingBalance"/>
+        <result column="available_balance"              property="availableBalance"/>
+        <result column="today_withdrawal_total_balance" property="todayWithdrawalTotalBalance"/>
+        <result column="reg_dt"                         property="regDt"/>
+    </resultMap>
+
+    <parameterMap id="Wallet" type="com.exchange.core.domain.dto.Wallet"/>
+
+    <sql id="table">wallet</sql>
+
+    <select id="findByUserIdAndCoinToCount" resultType="java.lang.Integer" parameterMap="Wallet">
+        SELECT
+          COUNT(*)
+        FROM
+          <include refid="table" />
+        WHERE
+          user_id=#{userId}
+        AND
+          coin_name=#{coinName}
+    </select>
+
+    <insert id="insert" parameterMap="Wallet" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`user_id`,`coin_name`,`address`,`bank_code`,`bank_name`,`recv_corp_nm`,`tag`,`deposit_dvcd`,`using_balance`,`available_balance`,`today_withdrawal_total_balance`,`reg_dt`)
+        VALUES
+        (#{userId},#{coinName},#{address},#{bankCode},#{bankName},#{recvCorpNm},#{tag},#{depositDvcd},#{usingBalance},#{availableBalance},#{todayWithdrawalTotalBalance},#{regDt})
+    </insert>
+
+    <select id="findAllByCoinToAddress" resultMap="AllFieldsResultMap" parameterType="com.exchange.core.domain.enums.CoinEnum">
+        SELECT
+          `address`
+        FROM
+          <include refid="table" />
+        WHERE
+          `coin_name`=#{coinName}
+        AND
+          `address` IS NOT NULL
+    </select>
+
+    <select id="findOneByCoinAndAddressToUserId" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+        `user_id`
+        FROM
+        <include refid="table" />
+        WHERE
+        `coin_name`=#{coinName}
+        AND
+        `address`=#{address}
+    </select>
+
+    <select id="findOneByUserIdAndCoin" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+          `id`,`coin_name`, `address`,`using_balance`,`available_balance`,`today_withdrawal_total_balance`
+        FROM
+          <include refid="table" />
+        WHERE
+          user_id=#{userId}
+        AND
+          coin_name=#{coinName}
+    </select>
+
+    <update id="updateByUserIdAndCoinToAll" parameterMap="Wallet">
+        UPDATE
+          <include refid="table" />
+        SET
+            `address`=#{address},
+            `bank_code`=#{bankCode},
+            `bank_name`=#{bankName},
+            `recv_corp_nm`=#{recvCorpNm},
+            `tag`=#{tag},
+            `using_balance`=#{usingBalance},
+            `available_balance`=#{availableBalance},
+            `today_withdrawal_total_balance`=#{todayWithdrawalTotalBalance},
+            `reg_dt`=#{regDt}
+        WHERE
+          user_id=#{userId}
+        AND
+          coin_name=#{coinName}
+    </update>
+
+    <select id="findOneByUserIdAndCoinToBalance" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+          `id`,`using_balance`,`available_balance`,`today_withdrawal_total_balance`
+        FROM
+          <include refid="table" />
+        WHERE
+          user_id=#{userId}
+        AND
+          coin_name=#{coinName}
+    </select>
+
+    <select id="findOneByUserIdAndCoinToUsingBalance" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+        `id`,`using_balance`
+        FROM
+        <include refid="table" />
+        WHERE
+        user_id=#{userId}
+        AND
+        coin_name=#{coinName}
+    </select>
+
+    <select id="findOneByUserIdAndCoinToAvailableBalance" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+        `id`,`available_balance`
+        FROM
+        <include refid="table" />
+        WHERE
+        user_id=#{userId}
+        AND
+        coin_name=#{coinName}
+    </select>
+
+    <select id="findOneByUserIdAndCoinToUsingBalanceAndAvailableBalance" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+        `id`,`using_balance`,`available_balance`
+        FROM
+        <include refid="table" />
+        WHERE
+        user_id=#{userId}
+        AND
+        coin_name=#{coinName}
+    </select>
+
+    <select id="findByUserIdAndTodayWithdrawalTotalBalanceGreaterThanToId" resultMap="AllFieldsResultMap" parameterMap="Wallet">
+        SELECT
+        `id`
+        FROM
+        <include refid="table" />
+        WHERE
+        user_id=#{userId}
+        AND
+        `today_withdrawal_total_balance`&gt;#{todayWithdrawalTotalBalance}
+    </select>
+
+    <update id="updateByIdToAllBalance" parameterMap="Wallet">
+        UPDATE
+        <include refid="table" />
+        SET
+        `using_balance`=#{usingBalance},
+        `available_balance`=#{availableBalance},
+        `today_withdrawal_total_balance`=#{todayWithdrawalTotalBalance}
+        WHERE
+        `id`=#{id}
+    </update>
+
+    <update id="updateByIdToUsingBalance" parameterMap="Wallet">
+        UPDATE
+        <include refid="table" />
+        SET
+        `using_balance`=#{usingBalance}
+        WHERE
+        `id`=#{id}
+    </update>
+
+    <update id="updateByIdToUsingBalanceAndAvailableBalance" parameterMap="Wallet">
+        UPDATE
+        <include refid="table" />
+        SET
+        `using_balance`=#{usingBalance},
+        `available_balance`=#{availableBalance}
+        WHERE
+        `id`=#{id}
+    </update>
+
+    <update id="updateByIdToAvailableBalance" parameterMap="Wallet">
+        UPDATE
+        <include refid="table" />
+        SET
+        `available_balance`=#{availableBalance}
+        WHERE
+        `id`=#{id}
+    </update>
+
+    <update id="updateByUserIdAndCoinToAvailableBalance" parameterMap="Wallet">
+        UPDATE
+          <include refid="table" />
+        SET
+          `available_balance`=#{availableBalance}
+        WHERE
+          `id`=#{id}
+    </update>
+
+    <update id="updateByIdToTodayWithdrawalTotalBalance" parameterMap="Wallet">
+        UPDATE
+          <include refid="table" />
+        SET
+          `today_withdrawal_total_balance`=#{todayWithdrawalTotalBalance}
+        WHERE
+        `id`=#{id}
+    </update>
+
+</mapper>

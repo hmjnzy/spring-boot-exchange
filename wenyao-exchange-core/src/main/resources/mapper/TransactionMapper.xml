@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exchange.core.repository.dao.impl.TransactionDaoImpl">
+
+    <resultMap id="AllFieldsResultMap"   type="com.exchange.core.domain.dto.Transaction">
+        <result column="id"                     property="id"/>
+        <result column="user_id"                property="userId"/>
+        <result column="coin_name"              property="coinName"/>
+        <result column="category"               property="category"/>
+        <result column="tx_id"                  property="txId"/>
+        <result column="address"                property="address"/>
+        <result column="tag"                    property="tag"/>
+        <result column="bank_nm"                property="bankNm"/>
+        <result column="recv_nm"                property="recvNm"/>
+        <result column="amount"                 property="amount"/>
+        <result column="reg_dt"                 property="regDt"/>
+        <result column="complete_dtm"           property="completeDtm"/>
+        <result column="confirmation"           property="confirmation"/>
+        <result column="status"                 property="status"/>
+        <result column="reason"                 property="reason"/>
+        <result column="withdrawal_fee_amount"  property="withdrawalFeeAmount"/>
+    </resultMap>
+
+    <parameterMap id="Transaction" type="com.exchange.core.domain.dto.Transaction"/>
+
+    <sql id="table">transaction</sql>
+
+    <select id="findAllByUserIdAndCoinAndCategoryOrderByRegDtDesc" resultMap="AllFieldsResultMap" parameterMap="Transaction">
+        SELECT
+          `id`,`user_id`,`coin_name`,`category`,`tx_id`,`address`,`tag`,`bank_nm`,`recv_nm`,`amount`,`reg_dt`,`complete_dtm`,`confirmation`,`status`,`reason`
+        FROM
+          <include refid="table" />
+        WHERE
+          `user_id`=#{userId}
+        AND
+          `coin_name`=#{coinName}
+        AND
+          `category`=#{category}
+        ORDER BY `reg_dt` DESC
+    </select>
+
+    <select id="findAllByCoinAndCategoryAndStatusOrderByRegDtASC" resultMap="AllFieldsResultMap" parameterMap="Transaction">
+        SELECT
+          `id`,`user_id`,`coin_name`,`category`,`tx_id`,`address`,`tag`,`bank_nm`,`recv_nm`,`amount`,`reg_dt`,`complete_dtm`,`confirmation`,`status`,`reason`
+        FROM
+          <include refid="table" />
+        WHERE
+          `coin_name`=#{coinName}
+        AND
+          `category`=#{category}
+        <if test="status != null">
+            AND `status`=#{status}
+        </if>
+        ORDER BY `reg_dt` ASC
+    </select>
+
+    <select id="findByIdAndUserIdToCount" resultType="java.lang.Integer" parameterMap="Transaction">
+        SELECT
+          COUNT(*)
+        FROM
+          <include refid="table" />
+        WHERE
+          `id`=#{id}
+        AND
+          `user_id`=#{userId}
+    </select>
+
+    <select id="findOneByIdToRegDtAndStatus" resultMap="AllFieldsResultMap" parameterMap="Transaction">
+        SELECT
+        `withdrawal_fee_amount`,`amount`,`reg_dt`,`complete_dtm`,`status`
+        FROM
+          <include refid="table" />
+        WHERE
+          `id`=#{id}
+        AND
+          `user_id`=#{userId}
+        AND
+          `coin_name`=#{coinName}
+    </select>
+
+    <select id="findOneByCoinAndTxId" resultMap="AllFieldsResultMap" parameterMap="Transaction">
+        SELECT
+        `id`,`reg_dt`,`status`
+        FROM
+          <include refid="table" />
+        WHERE
+          `coin_name`=#{coinName}
+        AND
+          `tx_id`=#{txId}
+    </select>
+
+    <insert id="insert" parameterMap="Transaction" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table" />
+        (`id`,`user_id`,`coin_name`,`category`,`tx_id`,`address`,`tag`,`bank_nm`,`recv_nm`,`amount`,`reg_dt`,`complete_dtm`,`confirmation`,`status`,`reason`,`withdrawal_fee_amount`)
+        VALUES
+        (#{id},#{userId},#{coinName},#{category},#{txId},#{address},#{tag},#{bankNm},#{recvNm},#{amount},#{regDt},#{completeDtm},#{confirmation},#{status},#{reason},#{withdrawalFeeAmount})
+    </insert>
+
+    <update id="updateCompleteStatus" parameterMap="Transaction">
+        UPDATE
+          <include refid="table" />
+        SET
+            <if test="txId != null">
+               `tx_id`=#{txId},
+            </if>
+           `reg_dt`=#{regDt},
+           `complete_dtm`=#{completeDtm},
+           `confirmation`=#{confirmation},
+           `status`=#{status}
+        WHERE
+          `id`=#{id}
+    </update>
+
+</mapper>
